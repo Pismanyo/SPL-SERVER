@@ -1,6 +1,6 @@
 package bgu.spl.net.api;
 
-public interface MessageEncoderDecoder {
+public interface MessageEncoderDecoder<T> {
 
     /**
      * add the next byte to the decoding process
@@ -9,7 +9,7 @@ public interface MessageEncoderDecoder {
      * message
      * @return a message if this byte completes one or null if it doesnt.
      */
-    String decodeNextByte(byte nextByte);
+    T decodeNextByte(byte nextByte);
 
     /**
      * encodes the given message to bytes array

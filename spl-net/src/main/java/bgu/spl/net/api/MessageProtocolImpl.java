@@ -1,9 +1,10 @@
 
 package bgu.spl.net.api;
 
-public class MessageProtocolImpl implements MessagingProtocol {
+public class MessageProtocolImpl implements MessagingProtocol<String> {
     @Override
-    public Object process(Object msg) {
+    public String process(String  msg) {
+
         return null;
     }
 

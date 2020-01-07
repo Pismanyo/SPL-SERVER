@@ -3,7 +3,7 @@ package bgu.spl.net.api;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-public class MessageEncoderDecoderImpl implements MessageEncoderDecoder {
+public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<String> {
 
     private byte[] bytes = new byte[1 << 10]; //start with 1k
     private int len = 0;

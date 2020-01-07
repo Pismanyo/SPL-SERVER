@@ -1,4 +1,6 @@
-package bgu.spl.net.frame;
+package bgu.spl.net.frame.toClient;
+
+import bgu.spl.net.frame.fromClient.Frame;
 
 public class Message implements Frame {
     private String msg;

@@ -19,20 +19,21 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
 
     private final MessagingProtocol <T> protocol;
     private final MessageEncoderDecoder <T>encdec;
+
     private final Queue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
     private final SocketChannel chan;
     private final Reactor reactor;
-    //private final StompMessagingProtocol stomp;
+    private StompMessagingProtocol stomp;
 
     public NonBlockingConnectionHandler(
             MessageEncoderDecoder reader,
             MessagingProtocol protocol,
             SocketChannel chan,
-            Reactor reactor)
-            //, StompMessagingProtocolImpl stomp )
+            Reactor reactor
+            , StompMessagingProtocol stomp )
             {
         this.chan = chan;
-        //this.stomp=stomp;
+        this.stomp=stomp;
         this.encdec = reader;
         this.protocol = protocol;
         this.reactor = reactor;
@@ -56,11 +57,12 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
                         T nextMessage = encdec.decodeNextByte(buf.get());
                         if (nextMessage != null) {
                             T  response = protocol.process(nextMessage);
-                            //stomp.process((String)response);
-                          //  if (response != null) {
-                        //        writeQueue.add(ByteBuffer.wrap(encdec.encode((String) response)));
-                         //       reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-                          //  }
+
+                            stomp.process((String)response);
+                            if (response != null) {
+                                writeQueue.add(ByteBuffer.wrap(encdec.encode((String) response)));
+                                reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                            }
                         }
                     }
                 } finally {

@@ -1,11 +1,16 @@
 package bgu.spl.net.frame.fromClient;
 
+import bgu.spl.net.api.StompMessagingProtocolImpl;
 import bgu.spl.net.frame.toClient.Error;
 import bgu.spl.net.frame.toClient.Message;
 
-public class Send {
+public class Send implements Frame{
     private Error e = new Error("");
     private Message toSend;
+
+    public Send(StompMessagingProtocolImpl stompMessagingProtocol) {
+    }
+
 
     public boolean process(String msg) {
 
@@ -33,5 +38,9 @@ public class Send {
 
     public Message getToSend() {
         return toSend;
+    }
+
+    public Error getError(){
+        return e;
     }
 }

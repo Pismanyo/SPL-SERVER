@@ -1,15 +1,15 @@
 package bgu.spl.net.frame.fromClient;
 
+import bgu.spl.net.api.StompMessagingProtocolImpl;
 import bgu.spl.net.frame.toClient.Connected;
 import bgu.spl.net.frame.toClient.Error;
-
-import java.security.cert.CertificateRevokedException;
+import bgu.spl.net.srv.User;
 
 public class Connect implements Frame {
     private User u;
     private Connected c;
     private Error error= new Error("");
-    public Connect(){
+    public Connect(StompMessagingProtocolImpl stompMessagingProtocol){
         c=null;
         u=null;
     }

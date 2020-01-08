@@ -1,4 +1,4 @@
-package bgu.spl.net.frame.fromClient;
+package bgu.spl.net.srv;
 
 public class User {
     private String username;

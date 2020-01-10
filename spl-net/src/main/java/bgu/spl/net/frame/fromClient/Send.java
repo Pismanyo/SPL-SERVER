@@ -1,10 +1,13 @@
 package bgu.spl.net.frame.fromClient;
 
+import bgu.spl.net.api.Messageformat;
 import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocolImpl;
 import bgu.spl.net.frame.toClient.Error;
 import bgu.spl.net.frame.toClient.Message;
+import bgu.spl.net.frame.toClient.Receipt;
 import bgu.spl.net.srv.Connections;
+import bgu.spl.net.srv.ConnectionsiImp;
 import bgu.spl.net.srv.User;
 
 public class Send implements Frame{
@@ -19,34 +22,27 @@ public class Send implements Frame{
 
 
     public boolean process(String msg) {
-
-        String topicLessMsg = msg.substring(0, '\n');
-        String line = topicLessMsg.substring(0, '\n');
-        if (lineprocess(line, "destination")) {
-            int a = line.indexOf(':');
-            String topicMsg = line.substring(a + 1);
-            if (topicMsg.length() != 0) {
-                toSend = new Message(topicMsg);
-
-            } else {
-                String errorMsg = e.getMsg();
-                errorMsg += "Not a valid version input" + '\n';
-                e.setMsg(errorMsg);
-                return false;
-            }
+        Messageformat a=new Messageformat();
+        ConnectionsiImp connect=ConnectionsiImp.getInstance();
+        String[] headers= a.messageformat(msg,format);
+        if(headers==null)
+        {
+            Error erro=new Error("Incorrect format.");
+            erro.setMsg(msg);
+            connect.send(stomp.getconnectid(),erro.toString());
+            return false;
         }
+        if(!stomp.getuser().isSubscribed(headers[0]))
+        {
+            Error erro=new Error("Not subsribed to topic");
+            erro.setMsg(msg);
+            connect.send(stomp.getconnectid(),erro.toString());
+            return false;
+
+        }
+        Message ans=new Message(headers[1],stomp.getuser().getId(headers[0]),headers[0]);
+        connect.send(headers[0],ans.toString());
         return true;
     }
 
-    public boolean lineprocess(String line, String wantedHeader) {
-        return (line.indexOf(':') != -1 && (line.substring(line.indexOf(':')).equals(wantedHeader)));
-    }
-
-    public Message getToSend() {
-        return toSend;
-    }
-
-    public Error getError(){
-        return e;
-    }
 }

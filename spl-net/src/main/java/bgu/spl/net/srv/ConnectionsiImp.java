@@ -2,19 +2,22 @@ package bgu.spl.net.srv;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectionsiImp  implements Connections<String> {
     private ConcurrentHashMap<String, LinkedBlockingDeque<Integer>> chanel;
     //private ConcurrentHashMap<String, ConcurrentHashMap<Integer,Integer>> subcribed;
     private ConcurrentHashMap<Integer, ConnectionHandler> conectinhandeler;
-    private int idCounter;
+    private AtomicInteger idCounter;
+    private AtomicInteger messageid;
     public static class connectionHolder {
         private static ConnectionsiImp instance = new ConnectionsiImp();
     }
     private ConnectionsiImp(){
 
         conectinhandeler=new ConcurrentHashMap<>();
-        idCounter=0;
+        idCounter=new AtomicInteger(0);
+        messageid=new AtomicInteger(0);
     }
     public static ConnectionsiImp getInstance() {
         return ConnectionsiImp.connectionHolder.instance;
@@ -33,8 +36,7 @@ public class ConnectionsiImp  implements Connections<String> {
 
     @Override
     public int getnext() {
-        idCounter++;
-        return idCounter;
+        return idCounter.incrementAndGet();
     }
 
     @Override
@@ -87,6 +89,10 @@ public class ConnectionsiImp  implements Connections<String> {
     @Override
     public void disconnect(int connectionId) {
         conectinhandeler.remove(connectionId);
+    }
+    public int Messageidcount()
+    {
+        return messageid.incrementAndGet();
     }
 
 }

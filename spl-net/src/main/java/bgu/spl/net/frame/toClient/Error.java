@@ -21,15 +21,19 @@ public class Error implements Frame {
     }
     public String toString()
     {
-        return  "ERROR"+'\n'
-                +"receipt-id:"+receiptId+'\n'
-                +"message: malformed frame received"+'\n'
+        String ans=  "ERROR"+'\n';
+        if(receiptId!="")
+        {
+            ans=ans+"receipt-id:"+receiptId+'\n';
+        }
+        ans=ans +"message: malformed frame received"+'\n'
                 +"-----"+'\n'
                 +sentMessage+'\n'
                 +"-----"+'\n'
                 +errorMessage+'\n'
                 +'\n'+
                 +'\u0000';
+        return ans;
     }
 
     @Override

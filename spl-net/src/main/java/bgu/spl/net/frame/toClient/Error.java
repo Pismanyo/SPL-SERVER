@@ -32,4 +32,8 @@ public class Error implements Frame {
                 +'\u0000';
     }
 
+    @Override
+    public boolean process(String msg) {
+        return false;
+    }
 }

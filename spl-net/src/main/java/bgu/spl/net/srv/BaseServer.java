@@ -29,6 +29,7 @@ public abstract class BaseServer<T> implements Server<T> {
         this.protocolFactory = protocolFactory;
         this.encdecFactory = encdecFactory;
 		this.sock = null;
+		talker=ConnectionsiImp.getInstance();
     }
 
     @Override
@@ -41,13 +42,16 @@ public abstract class BaseServer<T> implements Server<T> {
 
             while (!Thread.currentThread().isInterrupted()) {
 
-                Socket clientSock = serverSock.accept();
 
+                Socket clientSock = serverSock.accept();
+                int id=talker.getnext();
+               stomp.start( id,talker);
 
                 BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
                         clientSock,
                         encdecFactory.get(),
-                        protocolFactory.get());
+                        protocolFactory.get(),stomp);
+                talker.addConnectionHandler(handler,id);
 
 
                 execute(handler);

@@ -11,7 +11,7 @@ public interface Connections<T> {
     void disconnect(int connectionId);
     void addConnectionHandler(ConnectionHandler a,int id);
     int getnext();
-    void subscribe(int connectionId,String topic);
-    boolean unsubscribe(int connectionId);
+    void subscribe(String topic,int connectionid);
+    boolean unsubscribe(String topic,int connectionid);
 
 }

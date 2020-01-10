@@ -1,5 +1,6 @@
 package bgu.spl.net.frame.fromClient;
 
+import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocolImpl;
 import bgu.spl.net.frame.toClient.Connected;
 import bgu.spl.net.frame.toClient.Error;
@@ -9,7 +10,14 @@ public class Connect implements Frame {
     private User u;
     private Connected c;
     private Error error= new Error("");
+    private StompMessagingProtocol stomp;
+    private String[] format={"accept-version:","host:","login:"};
+
+
+
+
     public Connect(StompMessagingProtocolImpl stompMessagingProtocol){
+        stomp=stompMessagingProtocol;
         c=null;
         u=null;
     }

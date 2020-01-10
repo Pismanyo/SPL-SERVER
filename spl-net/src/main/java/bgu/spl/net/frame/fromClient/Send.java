@@ -1,14 +1,20 @@
 package bgu.spl.net.frame.fromClient;
 
+import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocolImpl;
 import bgu.spl.net.frame.toClient.Error;
 import bgu.spl.net.frame.toClient.Message;
+import bgu.spl.net.srv.Connections;
+import bgu.spl.net.srv.User;
 
 public class Send implements Frame{
     private Error e = new Error("");
     private Message toSend;
+    private String[] format={"destination:"};
+    private StompMessagingProtocolImpl stomp;
 
     public Send(StompMessagingProtocolImpl stompMessagingProtocol) {
+        stomp=stompMessagingProtocol;
     }
 
 

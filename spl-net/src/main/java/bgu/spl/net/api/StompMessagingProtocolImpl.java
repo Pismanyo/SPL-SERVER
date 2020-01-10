@@ -3,19 +3,20 @@ package bgu.spl.net.api;
 import bgu.spl.net.frame.fromClient.*;
 import bgu.spl.net.frame.toClient.Error;
 import bgu.spl.net.srv.Connections;
+import bgu.spl.net.srv.User;
 
 public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     private boolean toTerminate=false;
     private int connectionId;
     private Connections<String> connections;
-    private Integer subID;
+    private User activeUser;
 
 
     @Override
     public void start(int connectionId, Connections<String> connections) {
         this.connectionId = connectionId;
         this.connections = connections;
-        subID = null;
+        activeUser=null;
     }
 
     @Override
@@ -49,5 +50,17 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     @Override
     public boolean shouldTerminate() {
         return toTerminate;
+    }
+    public User getuser()
+    {
+        return activeUser;
+    }
+    public void setactiveUser(User a)
+    {
+        activeUser=a;
+    }
+    public int getconnectid()
+    {
+        return connectionId;
     }
 }

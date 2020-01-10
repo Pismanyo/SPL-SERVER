@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class ConnectionsiImp  implements Connections<String> {
     private ConcurrentHashMap<String, LinkedBlockingDeque<Integer>> chanel;
-    private ConcurrentHashMap<Integer, String> subcribed;
+    //private ConcurrentHashMap<String, ConcurrentHashMap<Integer,Integer>> subcribed;
     private ConcurrentHashMap<Integer, ConnectionHandler> conectinhandeler;
     private int idCounter;
     public static class connectionHolder {
@@ -38,41 +38,54 @@ public class ConnectionsiImp  implements Connections<String> {
     }
 
     @Override
-    public void subscribe(int connectionId, String topic) {
-        if (!chanel.contains(topic))
+    public void subscribe( String topic, int connectionid) {
+        if(!chanel.containsKey(topic))
         {
-            chanel.put(topic, new LinkedBlockingDeque<>());
+            chanel.put(topic,new LinkedBlockingDeque<>());//syncrized problem
         }
-        chanel.get(topic).add(connectionId);
-        subcribed.put(connectionId,topic);
+        chanel.get(topic).add(connectionid);
 
     }
 
+
     @Override
-    public boolean unsubscribe(int connectionId) {
-        if(!subcribed.contains(connectionId))
+    public boolean unsubscribe(String topic,int connectionId) {
+        if(!chanel.contains(topic))
             return false;
-        chanel.get(subcribed.get(connectionId)).remove(connectionId);
-        subcribed.remove(connectionId);
+        if(!chanel.get(topic).contains(connectionId))
+            return false;
+        chanel.get(topic).remove(connectionId);//should check what was removed
         return true;
     }
 
 
     @Override
-    public boolean send(int connectionId, String msg) {
-        conectinhandeler.get(connectionId).send(msg);
-
-        return true;
+    public synchronized boolean send(int connectionId, String msg) {
+        if(conectinhandeler.containsKey(connectionId))
+        {
+            conectinhandeler.get(connectionId).send(msg);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void send(String channel, String msg) {
+    public void send(String topic, String msg) {
+        if(chanel.containsKey(topic))
+        {
+            LinkedBlockingDeque<Integer> a=chanel.get(topic);
+            for(int temp:a)
+            {
+                send(temp,msg);
+            }
+
+        }
+
 
     }
 
     @Override
     public void disconnect(int connectionId) {
-        unsubscribe(connectionId);
         conectinhandeler.remove(connectionId);
     }
 

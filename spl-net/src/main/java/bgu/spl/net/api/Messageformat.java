@@ -23,7 +23,7 @@ public class Messageformat {
         }
         while(copyodmessage.indexOf('\n')==0)
             copyodmessage.substring(1);
-        ans[ans.length-1]=copyodmessage;
+        ans[ans.length-1]=copyodmessage.substring(0,copyodmessage.length()-1);
 
         return ans;
 

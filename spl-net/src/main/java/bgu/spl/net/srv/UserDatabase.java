@@ -24,5 +24,15 @@ public class UserDatabase {
 
     }
 
+    public User findUser(String username,String password)
+    {
+        if(userdata.containsKey(username)) {
+            if(userdata.get(username).getPassword()==password)
+                 return userdata.get(username);
+        }
+         return null;
+
+    }
+
 
 }

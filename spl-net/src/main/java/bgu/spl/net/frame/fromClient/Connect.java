@@ -1,83 +1,60 @@
 package bgu.spl.net.frame.fromClient;
 
+import bgu.spl.net.api.Messageformat;
 import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocolImpl;
 import bgu.spl.net.frame.toClient.Connected;
 import bgu.spl.net.frame.toClient.Error;
+import bgu.spl.net.srv.ConnectionsiImp;
 import bgu.spl.net.srv.User;
+import bgu.spl.net.srv.UserDatabase;
 
 public class Connect implements Frame {
-    private User u;
-    private Connected c;
-    private Error error= new Error("");
-    private StompMessagingProtocol stomp;
-    private String[] format={"accept-version:","host:","login:"};
+    private StompMessagingProtocolImpl stomp;
+    private String[] format={"accept-version:","host:","login:","passcode:"};
 
 
 
 
     public Connect(StompMessagingProtocolImpl stompMessagingProtocol){
         stomp=stompMessagingProtocol;
-        c=null;
-        u=null;
     }
 
-    public boolean process(String msg){
-        c = new Connected();
-        u = new User();
-        String line = msg.substring(0,'\n');
-        if(lineprocess(line,"accept-version"))
-        {
-            int a=line.indexOf(':');
-            String vernum=line.substring(a+1);
-            if(vernum.length()!=0) {
-                c.setVersion(Double.parseDouble(vernum));
-            }
-            else {
-                String errorMsg = error.getMsg();
-                errorMsg+="Not a valid version input"+'\n';
-                error.setMsg(errorMsg);
-                return false;}
+    public boolean process(String msg) {
+        Messageformat a = new Messageformat();
+        ConnectionsiImp connect = ConnectionsiImp.getInstance();
+        String[] headers = a.messageformat(msg, format);
+        if (headers == null) {
+            Error erro = new Error("Incorrect format.");
+            erro.setMsg(msg);
+            connect.send(stomp.getconnectid(), erro.toString());
+            return false;
         }
-        else return false;
-        msg=msg.substring('\n');
-        line=msg.substring(0,'\n');
-        if(lineprocess(line,"login")){
-            if(line.substring(line.indexOf(':')).length()>1){
-                u.setUsername( line.substring(line.indexOf(':')+1));
-            }
-            else {
+        if (stomp.getuser() != null) {
+            Error erro = new Error("Already connected to user.");
+            erro.setMsg(msg);
+            connect.send(stomp.getconnectid(), erro.toString());
+            return false;
+        }
+        UserDatabase data = UserDatabase.getInstance();
 
+        User user = data.findUser(headers[2],headers[3]);
+        if(user==null)
+        {
+            user.setUsername(headers[2]);
+            user.setPassword(headers[3]);
+            if (!data.addUser(user)) {
+                Error erro = new Error("Username already used.");
+                erro.setMsg(msg);
+                connect.send(stomp.getconnectid(), erro.toString());
                 return false;
             }
-        }
-        else return false;
-
-        msg=msg.substring('\n');
-        line = msg.substring(0,'\n');
-        if(lineprocess(line,"passcode")){
-            if(line.substring(line.indexOf(':')).length()>1){
-                u.setPassword(line.substring(line.indexOf(':')+1));
-            }
-            else return false;
-        }
-        else return false;
-        Error e;
-        if(u.getPassword()==null || u.getUsername()==null || c.getVersion()==null)
-             e = new Error("Malformed frame received");
-          return true;
 
         }
-        public boolean lineprocess(String line, String wantedHeader)
-        {
-            return (line.indexOf(':')!=-1&&(line.substring(line.indexOf(':')).equals(wantedHeader)));
-        }
-        public User  getUser()
-        {
-            return u;
-        }
-        public Connected getConnected()
-        {
-            return c;
-        }
+        stomp.setactiveUser(user);
+        Connected ans = new Connected(Double.parseDouble(headers[0]));
+        connect.send(stomp.getconnectid(), ans.toString());
+        return true;
+    }
+
     }

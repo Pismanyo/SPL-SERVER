@@ -29,6 +29,15 @@ public class Unsubscribe implements Frame {
         }
 
         User active=stomp.getuser();
+        if(active==null)
+        {
+            Error erro=new Error("No User connected to");
+            erro.setMsg(msg);
+            ConnectionsiImp.getInstance().send(stomp.getconnectid(),erro.toString());
+            return false;
+
+
+        }
         String topic =active.getTopic((Integer.parseInt(headers[0])));
         if(topic==null)
         {

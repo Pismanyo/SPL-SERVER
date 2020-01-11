@@ -32,7 +32,16 @@ public class Subscribe implements Frame {
         }
 
         User active=stomp.getuser();
-       if( !active.addSubscribe((Integer.parseInt(headers[1])),headers[0]))
+        if(active==null)
+        {
+            Error erro=new Error("No User connected to");
+            erro.setMsg(msg);
+            connect.send(stomp.getconnectid(),erro.toString());
+            return false;
+
+
+        }
+       if(!active.addSubscribe((Integer.parseInt(headers[1])),headers[0]))
        {
             Error erro=new Error("already subsribed under given id, or already subsribed to topic");
             erro.setMsg(msg);

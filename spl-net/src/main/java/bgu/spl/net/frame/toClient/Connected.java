@@ -3,7 +3,7 @@ package bgu.spl.net.frame.toClient;
 public class Connected {
     private Double version;
 
-    public Connected(){}
+    public Connected(Double version){this. version=version;}
 
     public Double getVersion() { return version; }
 

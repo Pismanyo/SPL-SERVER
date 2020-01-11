@@ -59,10 +59,8 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
                             T  response = protocol.process(nextMessage);
 
                             stomp.process((String)response);
-                            if (response != null) {
-                                writeQueue.add(ByteBuffer.wrap(encdec.encode((String) response)));
-                                reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-                            }
+
+
                         }
                     }
                 } finally {
@@ -106,7 +104,7 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         }
 
         if (writeQueue.isEmpty()) {
-            if (protocol.shouldTerminate()) close();
+            if (stomp.shouldTerminate()) close();
             else reactor.updateInterestedOps(chan, SelectionKey.OP_READ);
         }
     }
@@ -127,9 +125,8 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
 
     @Override
     public void send(T msg) {
-
-        writeQueue.add(ByteBuffer.wrap(encdec.encode((String)msg)));
-        reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+            writeQueue.add(ByteBuffer.wrap(encdec.encode((String) msg)));
+            reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
         //IMPLEMENT IF NEEDED
     }
 }

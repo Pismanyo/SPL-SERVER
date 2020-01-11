@@ -43,12 +43,16 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
                 f = new Error("Invalid input");
                 break;
         }
-        if(!f.process(message))
-            toTerminate=true;
+        if(!f.process(message)) {
+            connections.disconnect(connectionId);
+            toTerminate = true;
+
+        }
     }
 
     @Override
     public boolean shouldTerminate() {
+
         return toTerminate;
     }
     public User getuser()

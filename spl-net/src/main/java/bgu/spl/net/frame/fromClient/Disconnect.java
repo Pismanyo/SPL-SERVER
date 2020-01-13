@@ -36,6 +36,7 @@ public class Disconnect implements Frame {
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }
+        stomp.getuser().setActive(false);
         stomp.setactiveUser(null);
         Receipt ans = new Receipt(Integer.parseInt(headers[0]));
         connect.send(stomp.getconnectid(), ans.toString());

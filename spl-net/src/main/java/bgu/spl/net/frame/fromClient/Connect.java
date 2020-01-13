@@ -39,6 +39,12 @@ public class Connect implements Frame {
         UserDatabase data = UserDatabase.getInstance();
 
         User user = data.findUser(headers[2],headers[3]);
+        if (stomp.getuser().isActive()) {
+            Error erro = new Error("User already in use.");
+            erro.setMsg(msg);
+            connect.send(stomp.getconnectid(), erro.toString());
+            return false;
+        }
         if(user==null)
         {
             user.setUsername(headers[2]);

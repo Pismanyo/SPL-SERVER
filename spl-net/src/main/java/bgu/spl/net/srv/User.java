@@ -8,6 +8,7 @@ public class User {
     private String password;
     private ConcurrentHashMap<Integer,String> subscibe;
     private ConcurrentHashMap<String,Integer> topicToId;
+    private boolean active;
 
     public User(String username, String password)
     {
@@ -15,6 +16,7 @@ public class User {
         this.username=username;
         subscibe=new ConcurrentHashMap<>();
         topicToId=new ConcurrentHashMap<>();
+        active=true;
     }
     public User()
     {
@@ -80,5 +82,13 @@ public class User {
         }
 
         return false;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

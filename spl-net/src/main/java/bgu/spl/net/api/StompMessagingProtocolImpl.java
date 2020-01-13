@@ -21,6 +21,7 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
 
     @Override
     public void process(String message) {
+        System.out.println(message);
         String a= message.substring(0, message.indexOf('\n'));
         Frame f;
         switch (a) {

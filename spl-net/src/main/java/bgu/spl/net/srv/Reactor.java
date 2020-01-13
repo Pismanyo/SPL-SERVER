@@ -18,9 +18,8 @@ import java.util.function.Supplier;
 public class Reactor<T> implements Server<T> {
 
     private final int port;
-    private final Supplier<MessagingProtocol<T>> protocolFactory;
     private final Supplier<MessageEncoderDecoder<T>> readerFactory;
-   // private StompMessagingProtocol stomp;
+    private StompMessagingProtocol stomp;
     private final ActorThreadPool pool;
     private Connections connections;
     private Selector selector;
@@ -31,14 +30,12 @@ public class Reactor<T> implements Server<T> {
     public Reactor(
             int numThreads,
             int port,
-            Supplier<MessagingProtocol<T>> protocolFactory,
             Supplier<MessageEncoderDecoder<T>> readerFactory,
             StompMessagingProtocol stomp) {
-        //this.stomp=stomp;
+        this.stomp=stomp;
         this.pool = new ActorThreadPool(numThreads);
         this.port = port;
         connections=ConnectionsiImp.getInstance();
-        this.protocolFactory = protocolFactory;
         this.readerFactory = readerFactory;
     }
 
@@ -108,10 +105,9 @@ public class Reactor<T> implements Server<T> {
 
         final NonBlockingConnectionHandler<T> handler = new NonBlockingConnectionHandler(
                 readerFactory.get(),
-                protocolFactory.get(),
                 clientChan,
-                this,a
-                );
+                this, (StompMessagingProtocolImpl) a
+        );
         connections.addConnectionHandler(handler,id);
         clientChan.register(selector, SelectionKey.OP_READ, handler);
     }

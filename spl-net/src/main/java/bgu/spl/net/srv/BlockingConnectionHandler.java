@@ -3,6 +3,7 @@ package bgu.spl.net.srv;
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
+import bgu.spl.net.api.StompMessagingProtocolImpl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -11,7 +12,6 @@ import java.net.Socket;
 
 public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler<T> {
 
-    private final MessagingProtocol<T> protocol;
     private final MessageEncoderDecoder<T> encdec;
     private final Socket sock;
     private BufferedInputStream in;
@@ -20,10 +20,9 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private StompMessagingProtocol stomp;
 
 
-    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, MessagingProtocol<T> protocol, StompMessagingProtocol stomp) {
+    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, StompMessagingProtocolImpl stomp) {
         this.sock = sock;
         this.encdec = reader;
-        this.protocol = protocol;
         this.stomp=stomp;
     }
 
@@ -38,10 +37,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
             while (!stomp.shouldTerminate() && connected && (read = in.read()) >= 0) {
                 T nextMessage = encdec.decodeNextByte((byte) read);
                 if (nextMessage != null) {
-                    T response = protocol.process(nextMessage);
-                    if (response != null) {
-                        stomp.process((String)response);
-                    }
+                    stomp.process((String)nextMessage);
                 }
             }
 

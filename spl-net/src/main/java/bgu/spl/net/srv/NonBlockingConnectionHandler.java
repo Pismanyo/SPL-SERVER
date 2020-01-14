@@ -22,13 +22,13 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     private final Queue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
     private final SocketChannel chan;
     private final Reactor reactor;
-    private StompMessagingProtocolImpl stomp;
+    private StompMessagingProtocol stomp;
 
     public NonBlockingConnectionHandler(
             MessageEncoderDecoder reader,
             SocketChannel chan,
             Reactor reactor
-            , StompMessagingProtocolImpl stomp )
+            , StompMessagingProtocol stomp )
             {
         this.chan = chan;
         this.stomp=stomp;
@@ -122,6 +122,8 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     @Override
     public void send(T msg) {
             writeQueue.add(ByteBuffer.wrap(encdec.encode((String) msg)));
+            System.out.println(msg);
+            System.out.println('\u0000');
             reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
         //IMPLEMENT IF NEEDED
     }

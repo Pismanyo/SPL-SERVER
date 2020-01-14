@@ -11,6 +11,7 @@ import bgu.spl.net.srv.User;
 public class Unsubscribe implements Frame {
     private StompMessagingProtocolImpl stomp;
     private String[] format={"id:"};
+    private boolean hasbody=false;
 
     public Unsubscribe(StompMessagingProtocolImpl stompMessagingProtocol) {
         stomp=stompMessagingProtocol;
@@ -19,7 +20,7 @@ public class Unsubscribe implements Frame {
     @Override
     public boolean process(String msg) {
         Messageformat a=new Messageformat();
-        String[] headers= a.messageformat(msg,format);
+        String[] headers= a.messageformat(msg,format,hasbody);
         if(headers==null)
         {
             Error erro=new Error("Incorrect format.");

@@ -24,10 +24,10 @@ public interface Server<T> extends Closeable {
      */
     public static <T> Server<T>  threadPerClient(
             int port,
-            StompMessagingProtocolImpl stomp,
+            Supplier<StompMessagingProtocol> stompfactory,
             Supplier<MessageEncoderDecoder<T>> encoderDecoderFactory) {
 
-        return new BaseServer<T>(port, stomp, encoderDecoderFactory) {
+        return new BaseServer<T>(port, stompfactory, encoderDecoderFactory) {
             @Override
             protected void execute(BlockingConnectionHandler<T>  handler) {
                 new Thread(handler).start();
@@ -46,10 +46,10 @@ public interface Server<T> extends Closeable {
      */
     public static <T> Server<T> reactor(
             int nthreads,
-            int port,StompMessagingProtocolImpl stomp,
+            int port,Supplier<StompMessagingProtocol> stompfactory,
             Supplier<MessageEncoderDecoder<T>> encoderDecoderFactory)
              {
-        return new Reactor<T>(nthreads, port, encoderDecoderFactory,stomp);
+        return new Reactor<T>(nthreads, port, encoderDecoderFactory,stompfactory);
     }
 
 }

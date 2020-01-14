@@ -12,7 +12,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<String> 
     public String decodeNextByte(byte nextByte) {
         //notice that the top 128 ascii characters have the same representation as their utf-8 counterparts
         //this allow us to do the following comparison
-        if (nextByte == '\n') {
+        if (nextByte == '\u0000') {
             return popString();
         }
 
@@ -22,7 +22,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder<String> 
 
     @Override
     public byte[] encode(String message) {
-        return (message + "\n").getBytes(); //uses utf8 by default
+        return (message).getBytes(); //uses utf8 by default
     }
 
     private void pushByte(byte nextByte) {

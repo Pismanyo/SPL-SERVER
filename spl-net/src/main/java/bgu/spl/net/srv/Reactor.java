@@ -19,6 +19,7 @@ public class Reactor<T> implements Server<T> {
 
     private final int port;
     private final Supplier<MessageEncoderDecoder<T>> readerFactory;
+    private final Supplier<StompMessagingProtocol> stompFactory;
     private StompMessagingProtocol stomp;
     private final ActorThreadPool pool;
     private Connections connections;
@@ -31,8 +32,8 @@ public class Reactor<T> implements Server<T> {
             int numThreads,
             int port,
             Supplier<MessageEncoderDecoder<T>> readerFactory,
-            StompMessagingProtocol stomp) {
-        this.stomp=stomp;
+            Supplier<StompMessagingProtocol> stompFactory) {
+        this.stompFactory=stompFactory;
         this.pool = new ActorThreadPool(numThreads);
         this.port = port;
         connections=ConnectionsiImp.getInstance();
@@ -100,13 +101,13 @@ public class Reactor<T> implements Server<T> {
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
         int id=connections.getnext();
-        StompMessagingProtocol a=new StompMessagingProtocolImpl();
+        StompMessagingProtocol a=stompFactory.get();
         a.start(id,connections);
 
         final NonBlockingConnectionHandler<T> handler = new NonBlockingConnectionHandler(
                 readerFactory.get(),
                 clientChan,
-                this, (StompMessagingProtocolImpl) a
+                this,  a
         );
         connections.addConnectionHandler(handler,id);
         clientChan.register(selector, SelectionKey.OP_READ, handler);

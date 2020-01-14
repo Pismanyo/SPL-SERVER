@@ -2,28 +2,28 @@ package bgu.spl.net.api;
 
 
 public class Messageformat {
-    public String[] messageformat(String msg,String[] headers)
+    public String[] messageformat(String msg,String[] headers,boolean hasbody)
     {
-        String copyodmessage = msg.substring('\n');
-
-        String[] ans=new String[headers.length+1];
+        String[] splitMsg = msg.split("\n");
+        String []ans=new String[headers.length+1];
+  //      for(String s:splitMsg)
+    //        System.out.println(s);
         for(int a=0; a<headers.length;a++)
         {
-            while(copyodmessage.indexOf('\n')==0)
-                copyodmessage.substring(1);
-            String headercheack=copyodmessage.substring(0,copyodmessage.indexOf(':'));
-            if(headercheack==headers[a])
-            {
-                ans[a]=copyodmessage.substring(':'+1,'\n');
-            }
-            else{
+            String[] headline=splitMsg[a+1].split(":");
+            if(!(headline[0]+":").equals(headers[a]))
                 return null;
+            else{
+            ans[a] = headline[1];
             }
-            copyodmessage=copyodmessage.substring('\n'+1);
         }
-        while(copyodmessage.indexOf('\n')==0)
-            copyodmessage.substring(1);
-        ans[ans.length-1]=copyodmessage.substring(0,copyodmessage.length()-1);
+        ans[headers.length]="";
+        if(hasbody) {
+            for(int i=headers.length;i<msg.length();i++)
+            {
+                ans[headers.length]=ans[headers.length]+splitMsg[i]+"\n";
+            }
+        }
 
         return ans;
 

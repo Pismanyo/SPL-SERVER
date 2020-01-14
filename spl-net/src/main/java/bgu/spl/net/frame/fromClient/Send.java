@@ -15,6 +15,7 @@ public class Send implements Frame{
     private Message toSend;
     private String[] format={"destination:"};
     private StompMessagingProtocolImpl stomp;
+    private boolean hasbody=true;
 
     public Send(StompMessagingProtocolImpl stompMessagingProtocol) {
         stomp=stompMessagingProtocol;
@@ -24,7 +25,7 @@ public class Send implements Frame{
     public boolean process(String msg) {
         Messageformat a=new Messageformat();
         ConnectionsiImp connect=ConnectionsiImp.getInstance();
-        String[] headers= a.messageformat(msg,format);
+        String[] headers= a.messageformat(msg,format,hasbody);
         if(headers==null)
         {
             Error erro=new Error("Incorrect format.");

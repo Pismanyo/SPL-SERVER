@@ -23,6 +23,7 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     public void process(String message) {
         System.out.println(message);
         String a= message.substring(0, message.indexOf('\n'));
+        System.out.println(a);
         Frame f;
         switch (a) {
             case "SEND":

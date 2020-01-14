@@ -20,7 +20,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
     private StompMessagingProtocol stomp;
 
 
-    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, StompMessagingProtocolImpl stomp) {
+    public BlockingConnectionHandler(Socket sock, MessageEncoderDecoder<T> reader, StompMessagingProtocol stomp) {
         this.sock = sock;
         this.encdec = reader;
         this.stomp=stomp;

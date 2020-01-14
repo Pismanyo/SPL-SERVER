@@ -12,6 +12,7 @@ import bgu.spl.net.srv.UserDatabase;
 public class Connect implements Frame {
     private StompMessagingProtocolImpl stomp;
     private String[] format={"accept-version:","host:","login:","passcode:"};
+    private boolean hasbody=false;
 
 
 
@@ -23,7 +24,9 @@ public class Connect implements Frame {
     public boolean process(String msg) {
         Messageformat a = new Messageformat();
         ConnectionsiImp connect = ConnectionsiImp.getInstance();
-        String[] headers = a.messageformat(msg, format);
+        String[] headers = a.messageformat(msg, format,hasbody);
+        for(String s:headers)
+            System.out.println(s);
         if (headers == null) {
             Error erro = new Error("Incorrect format.");
             erro.setMsg(msg);
@@ -39,7 +42,7 @@ public class Connect implements Frame {
         UserDatabase data = UserDatabase.getInstance();
 
         User user = data.findUser(headers[2],headers[3]);
-        if (stomp.getuser().isActive()) {
+        if (user!=null&&user.isActive()) {
             Error erro = new Error("User already in use.");
             erro.setMsg(msg);
             connect.send(stomp.getconnectid(), erro.toString());
@@ -47,14 +50,14 @@ public class Connect implements Frame {
         }
         if(user==null)
         {
-            user.setUsername(headers[2]);
-            user.setPassword(headers[3]);
+            user=new User(headers[2],headers[3]);
             if (!data.addUser(user)) {
                 Error erro = new Error("Username already used.");
                 erro.setMsg(msg);
                 connect.send(stomp.getconnectid(), erro.toString());
                 return false;
             }
+            data.addUser(user);
 
         }
         stomp.setactiveUser(user);

@@ -8,15 +8,28 @@ public class Message {
     private String subsriptionid;
     private String messageid;
     private String topic;
-    public Message(String msg,Integer subsriptionid,String topic){
+    public Message(String msg,String topic){
         this.topic=topic;
         this.msg=msg;
-        this.subsriptionid=subsriptionid.toString();
-        Integer temp=ConnectionsiImp.getInstance().Messageidcount();
-        messageid=temp.toString();
-        while (messageid.length()<=5)
-            messageid="0"+messageid;
+      //  this.subsriptionid=subsriptionid.toString();
+       // Integer temp=ConnectionsiImp.getInstance().Messageidcount();
+      //  messageid=temp.toString();
+       // while (messageid.length()<=5)
+        //    messageid="0"+messageid;
     }
+    public void setSubsriptionid(Integer subsriptionid)
+    {
+            this.subsriptionid=subsriptionid.toString();
+    }
+
+
+    public void setMessageid(Integer messageNum) {
+
+        this.messageid = messageNum.toString();
+        while (messageid.length()<=5)
+              messageid="0"+messageid;
+    }
+
     public String toString()
     {
         return "MESSAGE"+'\n'

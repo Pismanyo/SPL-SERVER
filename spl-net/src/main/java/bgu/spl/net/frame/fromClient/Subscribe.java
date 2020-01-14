@@ -12,6 +12,7 @@ import bgu.spl.net.frame.toClient.Error;
 public class Subscribe implements Frame {
     private StompMessagingProtocolImpl stomp;
     private String[] format={"destination:","id:","receipt:"};
+    private boolean hasbody=false;
 
 
     public Subscribe(StompMessagingProtocolImpl stompMessagingProtocol) {
@@ -22,7 +23,7 @@ public class Subscribe implements Frame {
     public boolean process(String msg) {
         Messageformat a=new Messageformat();
         ConnectionsiImp connect=ConnectionsiImp.getInstance();
-        String[] headers= a.messageformat(msg,format);
+        String[] headers= a.messageformat(msg,format,hasbody);
         if(headers==null)
         {
             Error erro=new Error("Incorrect format.");
@@ -49,7 +50,7 @@ public class Subscribe implements Frame {
             return false;
 
         }
-        connect.subscribe(headers[0],stomp.getconnectid());
+        connect.subscribe(headers[0],Integer.parseInt(headers[1]),stomp.getconnectid());
         Receipt ans= new Receipt(Integer.parseInt(headers[2]));
        connect.send(stomp.getconnectid(),ans.toString());
 

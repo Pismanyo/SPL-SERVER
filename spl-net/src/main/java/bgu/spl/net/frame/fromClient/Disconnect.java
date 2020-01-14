@@ -14,6 +14,7 @@ import bgu.spl.net.srv.UserDatabase;
 public class Disconnect implements Frame {
     private StompMessagingProtocolImpl stomp;
     private String[] format={"receipt:"};
+    private boolean hasbody=false;
 
     public Disconnect(StompMessagingProtocolImpl stompMessagingProtocol) {
         stomp=stompMessagingProtocol;
@@ -23,7 +24,7 @@ public class Disconnect implements Frame {
     public boolean process(String msg) {
         Messageformat a = new Messageformat();
         ConnectionsiImp connect = ConnectionsiImp.getInstance();
-        String[] headers = a.messageformat(msg, format);
+        String[] headers = a.messageformat(msg, format,hasbody);
         if (headers == null) {
             Error erro = new Error("Incorrect format.");
             erro.setMsg(msg);

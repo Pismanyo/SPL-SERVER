@@ -1,36 +1,42 @@
 package bgu.spl.net.srv;
 
+import bgu.spl.net.api.PairForMe;
+import bgu.spl.net.frame.toClient.Message;
+import org.graalvm.util.Pair;
+
+import javax.swing.text.html.HTMLDocument;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectionsiImp  implements Connections<String> {
-    private ConcurrentHashMap<String, LinkedBlockingDeque<Integer>> chanel;
-    //private ConcurrentHashMap<String, ConcurrentHashMap<Integer,Integer>> subcribed;
-    private ConcurrentHashMap<Integer, ConnectionHandler> conectinhandeler;
+    private ConcurrentHashMap<String, ConcurrentSkipListMap<Integer, PairForMe>> subscribersIdToConnectionId;
+    private ConcurrentHashMap<Integer, ConnectionHandler> idToConectionHandler;
     private AtomicInteger idCounter;
     private AtomicInteger messageid;
     public static class connectionHolder {
         private static ConnectionsiImp instance = new ConnectionsiImp();
     }
-    private ConnectionsiImp(){
-
-        conectinhandeler=new ConcurrentHashMap<>();
-        idCounter=new AtomicInteger(0);
-        messageid=new AtomicInteger(0);
+    private ConnectionsiImp() {
+        subscribersIdToConnectionId = new ConcurrentHashMap<>();
+        idToConectionHandler = new ConcurrentHashMap<>();
+        idCounter = new AtomicInteger(0);
+        messageid = new AtomicInteger(0);
     }
     public static ConnectionsiImp getInstance() {
         return ConnectionsiImp.connectionHolder.instance;
     }
 //    public ConnectionsiImp()
 //    {
-//        conectinhandeler=new ConcurrentHashMap<>();
+//        idToConectionHandler=new ConcurrentHashMap<>();
 //        idCounter=0;
 //    }
     @Override
     public void addConnectionHandler(ConnectionHandler a,int id)
     {
-        conectinhandeler.put(id,a);
+        idToConectionHandler.put(id,a);
     }
 
 
@@ -40,32 +46,33 @@ public class ConnectionsiImp  implements Connections<String> {
     }
 
     @Override
-    public void subscribe( String topic, int connectionid) {
-        if(!chanel.containsKey(topic))
-        {
-            chanel.put(topic,new LinkedBlockingDeque<>());//syncrized problem
-        }
-        chanel.get(topic).add(connectionid);
+    public void subscribe( String topic,int subscriptionid, int connectionid) {
+        subscribersIdToConnectionId.putIfAbsent(topic,new ConcurrentSkipListMap<>((a,b)->{return b-a;}));//syncrized problem
+
+        subscribersIdToConnectionId.get(topic).put(subscriptionid,new PairForMe(subscriptionid,connectionid));
 
     }
 
 
     @Override
-    public boolean unsubscribe(String topic,int connectionId) {
-        if(!chanel.contains(topic))
-            return false;
-        if(!chanel.get(topic).contains(connectionId))
-            return false;
-        chanel.get(topic).remove(connectionId);//should check what was removed
-        return true;
+    public synchronized boolean unsubscribe(String topic,int SubsriptionId,int connectionId) {
+
+       return subscribersIdToConnectionId.get(topic).remove(SubsriptionId,connectionId);//should check what was removed
+    }
+
+    @Override
+    public void send(Message message, String msg) {
+
+        message.setMessageid(messageid.incrementAndGet());
+
     }
 
 
     @Override
     public synchronized boolean send(int connectionId, String msg) {
-        if(conectinhandeler.containsKey(connectionId))
+        if(idToConectionHandler.containsKey(connectionId))
         {
-            conectinhandeler.get(connectionId).send(msg);
+            idToConectionHandler.get(connectionId).send(msg);
             return true;
         }
         return false;
@@ -73,22 +80,20 @@ public class ConnectionsiImp  implements Connections<String> {
 
     @Override
     public void send(String topic, String msg) {
-        if(chanel.containsKey(topic))
+        NavigableSet<Integer> toSend =this.subscribersIdToConnectionId.get(topic).descendingKeySet();
+        Iterator<Integer> a= toSend.descendingIterator();
+        while (a.hasNext())
         {
-            LinkedBlockingDeque<Integer> a=chanel.get(topic);
-            for(int temp:a)
-            {
-                send(temp,msg);
-            }
-
+            this.send(a.next(),msg);
         }
-
-
+    }
+    public int compare(int first, int second) {
+        return  second- first;
     }
 
     @Override
     public void disconnect(int connectionId) {
-        conectinhandeler.remove(connectionId);
+        idToConectionHandler.remove(connectionId);
     }
     public int Messageidcount()
     {

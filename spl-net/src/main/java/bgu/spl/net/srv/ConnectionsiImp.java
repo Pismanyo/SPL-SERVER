@@ -57,7 +57,7 @@ public class ConnectionsiImp  implements Connections<String> {
     @Override
     public synchronized boolean unsubscribe(String topic,int SubsriptionId,int connectionId) {
 
-       return subscribersIdToConnectionId.get(topic).remove(SubsriptionId,connectionId);//should check what was removed
+       return subscribersIdToConnectionId.get(topic).remove(SubsriptionId,new PairForMe(SubsriptionId,connectionId));//should check what was removed
     }
 
     @Override

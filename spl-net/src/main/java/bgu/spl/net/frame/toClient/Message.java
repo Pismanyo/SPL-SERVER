@@ -8,7 +8,7 @@ public class Message {
     private String subsriptionid;
     private String messageid;
     private String topic;
-    public Message(String msg,String topic){
+    public Message(String topic,String msg){
         this.topic=topic;
         this.msg=msg;
       //  this.subsriptionid=subsriptionid.toString();

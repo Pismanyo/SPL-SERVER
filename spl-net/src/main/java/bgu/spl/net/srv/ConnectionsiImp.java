@@ -2,7 +2,6 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.PairForMe;
 import bgu.spl.net.frame.toClient.Message;
-import org.graalvm.util.Pair;
 
 import javax.swing.text.html.HTMLDocument;
 import java.util.*;
@@ -11,7 +10,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ConnectionsiImp  implements Connections<String> {
+public class ConnectionsiImp implements Connections<String> {
     private ConcurrentHashMap<String, ConcurrentSkipListMap<Integer, PairForMe>> subscribersIdToConnectionId;
     private ConcurrentHashMap<Integer, ConnectionHandler> idToConectionHandler;
     private AtomicInteger idCounter;
@@ -55,15 +54,26 @@ public class ConnectionsiImp  implements Connections<String> {
 
 
     @Override
-    public synchronized boolean unsubscribe(String topic,int SubsriptionId,int connectionId) {
+    public boolean unsubscribe(String topic,int SubsriptionId,int connectionId) {
 
        return subscribersIdToConnectionId.get(topic).remove(SubsriptionId,new PairForMe(SubsriptionId,connectionId));//should check what was removed
     }
 
     @Override
-    public void send(Message message, String msg) {
+    public synchronized void send(String topic, Message message) {
+        NavigableSet<Integer> toSend =this.subscribersIdToConnectionId.get(topic).descendingKeySet();
+        Iterator<Integer> a= toSend.descendingIterator();
 
-        message.setMessageid(messageid.incrementAndGet());
+        while (a.hasNext())
+        {
+            message.setMessageid(this.messageid.incrementAndGet());
+            int temp=a.next();
+            message.setSubsriptionid(temp);
+            int connectid=this.subscribersIdToConnectionId.get(topic).get(temp).getSecond();
+            this.send(connectid,message.toString());
+        }
+
+
 
     }
 
@@ -86,9 +96,6 @@ public class ConnectionsiImp  implements Connections<String> {
         {
             this.send(a.next(),msg);
         }
-    }
-    public int compare(int first, int second) {
-        return  second- first;
     }
 
     @Override

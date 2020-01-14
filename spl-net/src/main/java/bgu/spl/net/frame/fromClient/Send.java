@@ -41,8 +41,8 @@ public class Send implements Frame{
             return false;
 
         }
-        Message ans=new Message(headers[1],stomp.getuser().getId(headers[0]),headers[0]);
-        connect.send(headers[0],ans.toString());
+        Message ans=new Message(headers[1],headers[headers.length-1]);
+        connect.send(headers[0],ans);
         return true;
     }
 

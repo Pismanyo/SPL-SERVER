@@ -26,18 +26,17 @@ public class Message {
     public void setMessageid(Integer messageNum) {
 
         this.messageid = messageNum.toString();
-        while (messageid.length()<=5)
+        while (messageid.length()<5)
               messageid="0"+messageid;
     }
 
     public String toString()
     {
-        return "MESSAGE"+'\n'
-                +"subscription:"+subsriptionid+'\n'
-                +"Message-id:"+messageid+'\n'
-                +"destination:"+topic+'\n'
-                +'\n'+
+        return "MESSAGE"+"\n"
+                +"subscription:"+subsriptionid+"\n"
+                +"Message-id:"+messageid+"\n"
+                +"destination:"+topic+"\n\n"+
                 msg
-                +'\u0000';
+                +"\u0000";
     }
 }

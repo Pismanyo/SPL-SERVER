@@ -10,9 +10,8 @@ public class Receipt {
     }
     public String toString()
     {
-        return "RECEIPT"+'\n'
-                +"receipt-id:"+receiptid+'\n'
-                +'\n'+
-                +'\u0000';
+        return "RECEIPT"+"\n"
+                +"receipt-id:"+receiptid+"\n\n"
+                +"\u0000";
     }
 }

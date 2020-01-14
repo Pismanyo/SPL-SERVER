@@ -41,7 +41,7 @@ public class Send implements Frame{
             return false;
 
         }
-        Message ans=new Message(headers[1],headers[headers.length-1]);
+        Message ans=new Message(headers[0],headers[1]);
         connect.send(headers[0],ans);
         return true;
     }

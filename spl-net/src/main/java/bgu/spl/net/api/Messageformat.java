@@ -19,7 +19,7 @@ public class Messageformat {
         }
         ans[headers.length]="";
         if(hasbody) {
-            for(int i=headers.length;i<msg.length();i++)
+            for(int i=(headers.length+1);i<splitMsg.length;i++)
             {
                 ans[headers.length]=ans[headers.length]+splitMsg[i]+"\n";
             }

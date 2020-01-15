@@ -11,7 +11,9 @@ import bgu.spl.net.srv.User;
 
 public class Unsubscribe implements Frame {
     private StompMessagingProtocolImpl stomp;
+    private String[] format2={"id:","receipt:"};
     private String[] format={"id:"};
+
     private boolean hasbody=false;
 
     public Unsubscribe(StompMessagingProtocolImpl stompMessagingProtocol) {
@@ -55,6 +57,7 @@ public class Unsubscribe implements Frame {
 
         }
         Receipt ans=new Receipt(Integer.parseInt(headers[0]));
+        connect.unsubscribe(topic,Integer.parseInt(headers[0]),this.stomp.getconnectid());
         connect.send(stomp.getconnectid(),ans.toString());
 
         return true;

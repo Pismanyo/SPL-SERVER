@@ -12,6 +12,7 @@ import bgu.spl.net.frame.toClient.Error;
 public class Subscribe implements Frame {
     private StompMessagingProtocolImpl stomp;
     private String[] format={"destination:","id:","receipt:"};
+    private String[] format2={"destination:","id:"};
     private boolean hasbody=false;
 
 

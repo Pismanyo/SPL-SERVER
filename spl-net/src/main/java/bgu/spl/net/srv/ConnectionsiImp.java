@@ -57,7 +57,8 @@ public class ConnectionsiImp implements Connections<String> {
     @Override
     public boolean unsubscribe(String topic,int SubsriptionId,int connectionId) {
 
-       return subscribersIdToConnectionId.get(topic).remove(SubsriptionId,new PairForMe(SubsriptionId,connectionId));//should check what was removed
+        subscribersIdToConnectionId.get(topic).remove(SubsriptionId);//should check what was removed
+        return true;
     }
 
     @Override

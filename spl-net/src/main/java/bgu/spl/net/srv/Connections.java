@@ -13,6 +13,6 @@ public interface Connections<T> {
     void disconnect(int connectionId);
     void addConnectionHandler(ConnectionHandler a,int id);
     int getnext();
-    void subscribe(String topic,int subscriberid,int connectionid);
+    boolean subscribe(String topic,int subscriberid,int connectionid);
     boolean unsubscribe(String topic,int SubsriptionId,int connectionId);
 }

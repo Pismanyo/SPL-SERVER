@@ -26,14 +26,12 @@ public class Disconnect implements Frame {
         ConnectionsiImp connect = ConnectionsiImp.getInstance();
         String[] headers = a.messageformat(msg, format,hasbody);
         if (headers == null) {
-            Error erro = new Error("Incorrect format.");
-            erro.setMsg(msg);
+            Error erro = new Error(msg,"Incorrect format.");
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }
         if (stomp.getuser() == null) {
-            Error erro = new Error("No user to disconnect.");
-            erro.setMsg(msg);
+            Error erro = new Error(msg,"No user to disconnect.");
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }

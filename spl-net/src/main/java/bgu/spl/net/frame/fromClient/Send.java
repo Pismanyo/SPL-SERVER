@@ -11,7 +11,6 @@ import bgu.spl.net.srv.ConnectionsiImp;
 import bgu.spl.net.srv.User;
 
 public class Send implements Frame{
-    private Error e = new Error("");
     private Message toSend;
     private String[] format={"destination:"};
     private StompMessagingProtocolImpl stomp;
@@ -28,15 +27,13 @@ public class Send implements Frame{
         String[] headers= a.messageformat(msg,format,hasbody);
         if(headers==null)
         {
-            Error erro=new Error("Incorrect format.");
-            erro.setMsg(msg);
+            Error erro=new Error(msg,"Incorrect format.");
             connect.send(stomp.getconnectid(),erro.toString());
             return false;
         }
         if(!stomp.getuser().isSubscribed(headers[0]))
         {
-            Error erro=new Error("Not subsribed to topic");
-            erro.setMsg(msg);
+            Error erro=new Error(msg,"Not subsribed to topic");
             connect.send(stomp.getconnectid(),erro.toString());
             return false;
 

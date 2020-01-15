@@ -26,8 +26,7 @@ public class Subscribe implements Frame {
         String[] headers= a.messageformat(msg,format,hasbody);
         if(headers==null)
         {
-            Error erro=new Error("Incorrect format.");
-            erro.setMsg(msg);
+            Error erro=new Error(msg,"Incorrect format.");
             connect.send(stomp.getconnectid(),erro.toString());
             return false;
         }
@@ -35,8 +34,7 @@ public class Subscribe implements Frame {
         User active=stomp.getuser();
         if(active==null)
         {
-            Error erro=new Error("No User connected to");
-            erro.setMsg(msg);
+            Error erro=new Error(msg,"No User connected to");
             connect.send(stomp.getconnectid(),erro.toString());
             return false;
 
@@ -44,15 +42,19 @@ public class Subscribe implements Frame {
         }
        if(!active.addSubscribe((Integer.parseInt(headers[1])),headers[0]))
        {
-            Error erro=new Error("already subsribed under given id, or already subsribed to topic");
-            erro.setMsg(msg);
+            Error erro=new Error(msg,"already subsribed under given id, or already subsribed to topic");
            connect.send(stomp.getconnectid(),erro.toString());
             return false;
 
         }
-        connect.subscribe(headers[0],Integer.parseInt(headers[1]),stomp.getconnectid());
+        if(!connect.subscribe(headers[0],Integer.parseInt(headers[1]),stomp.getconnectid()))
+        {
+            Error erro=new Error(msg,"different user subsribed under given subsribedid");
+            connect.send(stomp.getconnectid(),erro.toString());
+            return false;
+        }
         Receipt ans= new Receipt(Integer.parseInt(headers[2]));
-       connect.send(stomp.getconnectid(),ans.toString());
+        connect.send(stomp.getconnectid(),ans.toString());
 
         return true;
 

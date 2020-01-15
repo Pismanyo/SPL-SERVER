@@ -6,17 +6,21 @@ public class Error implements Frame {
     private String sentMessage;
     private String errorMessage;
     private String type;
-    private String receiptId;
+    private String receiptId="";
 
-    public Error(String msg){
-        this.errorMessage=msg;
+    public Error(String msg,String errorMessage){
+        this.sentMessage=msg;
+        this.errorMessage=errorMessage;
     }
 
     public String getMsg() {
-        return errorMessage;
+        return sentMessage;
+    }
+    public void setRecpitId(String receiptId) {
+        this.receiptId = receiptId;
     }
 
-    public void setMsg(String msg) {
+    public void setErrorOfMsg(String msg) {
         this.errorMessage = msg;
     }
     public String toString()
@@ -27,12 +31,13 @@ public class Error implements Frame {
             ans=ans+"receipt-id:"+receiptId+'\n';
         }
         ans=ans +"message: malformed frame received"+'\n'
-                +"-----"+'\n'
-                +sentMessage+'\n'
-                +"-----"+'\n'
-                +errorMessage+'\n'
-                +'\n'+
-                +'\u0000';
+                +"-----"+"\n"
+                +"\n"+
+                sentMessage+"\n"
+                +"-----"+"\n"
+                +errorMessage+"\n"
+                +"\n"+
+                + '\u0000';
         return ans;
     }
 

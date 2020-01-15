@@ -28,14 +28,12 @@ public class Connect implements Frame {
         for(String s:headers)
             System.out.println(s);
         if (headers == null) {
-            Error erro = new Error("Incorrect format.");
-            erro.setMsg(msg);
+            Error erro = new Error(msg,"Incorrect format.");
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }
         if (stomp.getuser() != null) {
-            Error erro = new Error("Already connected to user.");
-            erro.setMsg(msg);
+            Error erro = new Error(msg,"Already connected to user.");
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }
@@ -43,8 +41,7 @@ public class Connect implements Frame {
 
         User user = data.findUser(headers[2],headers[3]);
         if (user!=null&&user.isActive()) {
-            Error erro = new Error("User already in use.");
-            erro.setMsg(msg);
+            Error erro = new Error(msg,"User already in use.");
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }
@@ -52,8 +49,7 @@ public class Connect implements Frame {
         {
             user=new User(headers[2],headers[3]);
             if (!data.addUser(user)) {
-                Error erro = new Error("Username already used.");
-                erro.setMsg(msg);
+                Error erro = new Error(msg,"Username already used.");
                 connect.send(stomp.getconnectid(), erro.toString());
                 return false;
             }

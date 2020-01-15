@@ -1,21 +1,22 @@
 package bgu.spl.net.srv;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class User {
     private String username;
     private String password;
-    private ConcurrentHashMap<Integer,String> subscibe;
-    private ConcurrentHashMap<String,Integer> topicToId;
+    private HashMap<Integer,String> subscibe;
+    private HashMap<String,Integer> topicToId;
     private boolean active;
 
     public User(String username, String password)
     {
         this.password=password;
         this.username=username;
-        subscibe=new ConcurrentHashMap<>();
-        topicToId=new ConcurrentHashMap<>();
+        subscibe=new HashMap<>();
+        topicToId=new HashMap<>();
         active=true;
     }
     public User()

@@ -45,11 +45,12 @@ public class ConnectionsiImp implements Connections<String> {
     }
 
     @Override
-    public void subscribe( String topic,int subscriptionid, int connectionid) {
+    public boolean subscribe( String topic,int subscriptionid, int connectionid) {
         subscribersIdToConnectionId.putIfAbsent(topic,new ConcurrentSkipListMap<>((a,b)->{return b-a;}));//syncrized problem
-
+        if(subscribersIdToConnectionId.get(topic).containsKey(subscriptionid))
+            return false;
         subscribersIdToConnectionId.get(topic).put(subscriptionid,new PairForMe(subscriptionid,connectionid));
-
+        return true;
     }
 
 
@@ -70,7 +71,8 @@ public class ConnectionsiImp implements Connections<String> {
             int temp=a.next();
             message.setSubsriptionid(temp);
             int connectid=this.subscribersIdToConnectionId.get(topic).get(temp).getSecond();
-            this.send(connectid,message.toString());
+            if(!this.send(connectid,message.toString()))
+                subscribersIdToConnectionId.get(topic).remove(temp);
         }
 
 
@@ -94,12 +96,15 @@ public class ConnectionsiImp implements Connections<String> {
         Iterator<Integer> a= toSend.descendingIterator();
         while (a.hasNext())
         {
-            this.send(a.next(),msg);
+            int temp=a.next();
+            if(!this.send(this.subscribersIdToConnectionId.get(topic).get(temp).getSecond(),msg))
+                subscribersIdToConnectionId.get(topic).remove(temp);
         }
     }
 
     @Override
     public void disconnect(int connectionId) {
+
         idToConectionHandler.remove(connectionId);
     }
     public int Messageidcount()

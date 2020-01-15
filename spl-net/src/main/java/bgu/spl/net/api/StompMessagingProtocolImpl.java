@@ -42,7 +42,7 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
                 f = new Disconnect(this);
                 break;
             default:
-                f = new Error("Invalid input");
+                f = new Error(message,"Invalid input");
                 break;
         }
         if(!f.process(message)) {

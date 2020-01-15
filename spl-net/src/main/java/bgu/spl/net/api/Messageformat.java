@@ -1,13 +1,14 @@
 package bgu.spl.net.api;
 
 
+import java.util.HashMap;
+
 public class Messageformat {
-    public String[] messageformat(String msg,String[] headers,boolean hasbody)
+    public String[] messageformat(String msg, String[] headers, boolean hasbody)
     {
         String[] splitMsg = msg.split("\n");
         String []ans=new String[headers.length+1];
-  //      for(String s:splitMsg)
-    //        System.out.println(s);
+
         for(int a=0; a<headers.length;a++)
         {
             String[] headline=splitMsg[a+1].split(":");
@@ -19,7 +20,7 @@ public class Messageformat {
         }
         ans[headers.length]="";
         if(hasbody) {
-            for(int i=(headers.length+1);i<splitMsg.length;i++)
+            for(int i=(headers.length+2);i<splitMsg.length;i++)
             {
                 ans[headers.length]=ans[headers.length]+splitMsg[i]+"\n";
             }

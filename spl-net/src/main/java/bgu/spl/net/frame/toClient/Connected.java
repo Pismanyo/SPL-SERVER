@@ -9,5 +9,5 @@ public class Connected {
 
     public void setVersion(Double version) { this.version = version; }
 
-    public String toString(){ return "CONNECTED"+'\n'+"version:"+version+'\n'+'\u0000'; }
+    public String toString(){ return "CONNECTED"+'\n'+"version:"+version+"\n\n"+'\u0000'; }
 }

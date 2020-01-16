@@ -1,5 +1,6 @@
 package bgu.spl.net.srv;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +25,17 @@ public class User {
 
     }
 
-
+    public void disconnect(int conectionId)
+    {
+        Collection<String>a=subscibe.values();
+        String[] toRomove=(String[])a.toArray();
+        for(int i=0;i<toRomove.length;i++)
+        {
+            ConnectionsiImp.getInstance().unsubscribe(toRomove[i],topicToId.get(toRomove[i]),conectionId);
+        }
+        subscibe.clear();
+        topicToId.clear();
+    }
     public String getUsername() {
         return username;
     }

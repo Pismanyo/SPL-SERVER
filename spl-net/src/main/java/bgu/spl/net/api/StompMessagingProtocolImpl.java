@@ -46,7 +46,9 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
                 break;
         }
         if(!f.process(message)) {
+
             activeUser.setActive(false);
+            activeUser.disconnect(connectionId);
             connections.disconnect(connectionId);
             toTerminate = true;
 

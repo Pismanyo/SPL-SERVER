@@ -24,21 +24,23 @@ public class Disconnect implements Frame {
     public boolean process(String msg) {
         Messageformat a = new Messageformat();
         ConnectionsiImp connect = ConnectionsiImp.getInstance();
-        String[] headers = a.messageformat(msg, format,hasbody);
+        String[] headers = a.messageformat(msg, format, hasbody);
         if (headers == null) {
-            Error erro = new Error(msg,"Incorrect format.");
+            Error erro = new Error(msg, "Incorrect format.");
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }
         if (stomp.getuser() == null) {
-            Error erro = new Error(msg,"No user to disconnect.");
+            Error erro = new Error(msg, "No user to disconnect.");
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }
+
         stomp.getuser().setActive(false);
         stomp.setactiveUser(null);
         Receipt ans = new Receipt(Integer.parseInt(headers[0]));
         connect.send(stomp.getconnectid(), ans.toString());
+        stomp.setToTerminate(true);
 
         return true;
     }

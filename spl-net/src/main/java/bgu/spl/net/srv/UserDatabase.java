@@ -20,14 +20,17 @@ public class UserDatabase {
             userdata.put(a.getUsername(), a);
             return true;
         }
-        else return false;
+        else{
+            return false;
+        }
+//        else return false;
 
     }
 
     public User findUser(String username,String password)
     {
         if(userdata.containsKey(username)) {
-            if(userdata.get(username).getPassword()==password)
+            if(userdata.get(username).getPassword().equals(password))
                  return userdata.get(username);
         }
          return null;

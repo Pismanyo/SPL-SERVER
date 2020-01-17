@@ -22,7 +22,7 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     @Override
     public void process(String message) {
         System.out.println(message);
-        String a= message.substring(0, message.indexOf('\n'));
+        String a = message.substring(0, message.indexOf('\n'));
         System.out.println(a);
         Frame f;
         switch (a) {
@@ -42,23 +42,27 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
                 f = new Disconnect(this);
                 break;
             default:
-                f = new Error(message,"Invalid input");
+                f = new Error(message, "Invalid input");
                 break;
         }
-        if(!f.process(message)) {
-
-            activeUser.setActive(false);
-            activeUser.disconnect(connectionId);
+        if (!f.process(message)) {
+                activeUser.setActive(false);
+                activeUser.disconnect(connectionId);
             connections.disconnect(connectionId);
             toTerminate = true;
+        } else if (f instanceof Disconnect)
+            connections.disconnect(connectionId);
 
-        }
     }
 
     @Override
     public boolean shouldTerminate() {
 
         return toTerminate;
+    }
+
+    public void setToTerminate(boolean terminate){
+        toTerminate=terminate;
     }
     public User getuser()
     {

@@ -49,11 +49,13 @@ public class Connect implements Frame {
         {
             user=new User(headers[2],headers[3]);
             if (!data.addUser(user)) {
-                Error erro = new Error(msg,"Username already used.");
-                connect.send(stomp.getconnectid(), erro.toString());
-                return false;
+                if (data.findUser(user.getUsername(), user.getPassword()) == null) {
+                    Error erro = new Error(msg, "Username already used.");
+                    connect.send(stomp.getconnectid(), erro.toString());
+                    return false;
+                }
             }
-            data.addUser(user);
+//            data.addUser(user);
 
         }
         stomp.setactiveUser(user);

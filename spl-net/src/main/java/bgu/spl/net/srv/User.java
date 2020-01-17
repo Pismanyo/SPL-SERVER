@@ -28,7 +28,13 @@ public class User {
     public void disconnect(int conectionId)
     {
         Collection<String>a=subscibe.values();
-        String[] toRomove=(String[])a.toArray();
+        Object[] arr = a.toArray();
+        String[] toRomove = new String[arr.length];
+        int index=0;
+        for(Object o: arr) {
+            toRomove[index]=(String)o;
+            ++index;
+        }
         for(int i=0;i<toRomove.length;i++)
         {
             ConnectionsiImp.getInstance().unsubscribe(toRomove[i],topicToId.get(toRomove[i]),conectionId);

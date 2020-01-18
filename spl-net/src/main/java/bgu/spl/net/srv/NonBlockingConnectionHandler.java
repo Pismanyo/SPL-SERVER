@@ -120,7 +120,6 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     public void send(T msg) {
         if(msg!=null) {
             writeQueue.add(ByteBuffer.wrap(encdec.encode((String) msg)));
-            System.out.println((String) msg);
             reactor.updateInterestedOps(chan, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
         }
         //IMPLEMENT IF NEEDED

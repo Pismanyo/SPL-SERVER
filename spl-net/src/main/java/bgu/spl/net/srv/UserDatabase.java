@@ -36,6 +36,11 @@ public class UserDatabase {
          return null;
 
     }
+    public boolean checkPassword(String username,String password)
+    {
+      return userdata.get(username).getPassword().equals(password);
+    }
+
 
 
 }

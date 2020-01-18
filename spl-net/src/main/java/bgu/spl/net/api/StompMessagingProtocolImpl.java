@@ -23,7 +23,6 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     public void process(String message) {
         System.out.println(message);
         String a = message.substring(0, message.indexOf('\n'));
-        System.out.println(a);
         Frame f;
         switch (a) {
             case "SEND":
@@ -46,9 +45,11 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
                 break;
         }
         if (!f.process(message)) {
+            if(activeUser!=null) {
                 activeUser.setActive(false);
                 activeUser.disconnect(connectionId);
-            connections.disconnect(connectionId);
+                connections.disconnect(connectionId);
+            }
             toTerminate = true;
         } else if (f instanceof Disconnect)
             connections.disconnect(connectionId);

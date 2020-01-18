@@ -41,7 +41,7 @@ public class Connect implements Frame {
 
         User user = data.findUser(headers[2],headers[3]);
         if (user!=null&&user.isActive()) {
-            Error erro = new Error(msg,"User already in use.");
+            Error erro = new Error(msg,"User already logged in.");
             connect.send(stomp.getconnectid(), erro.toString());
             return false;
         }
@@ -50,7 +50,7 @@ public class Connect implements Frame {
             user=new User(headers[2],headers[3]);
             if (!data.addUser(user)) {
                 if (data.findUser(user.getUsername(), user.getPassword()) == null) {
-                    Error erro = new Error(msg, "Username already used.");
+                    Error erro = new Error(msg, "Wrong password.");
                     connect.send(stomp.getconnectid(), erro.toString());
                     return false;
                 }

@@ -35,9 +35,8 @@ public class Error implements Frame {
                 +"\n"+
                 sentMessage+"\n"
                 +"-----"+"\n"
-                +errorMessage+"\n"
-                +"\n"+
-                + '\u0000';
+                +errorMessage+"\n\n"
+                +"\u0000";
         return ans;
     }
 

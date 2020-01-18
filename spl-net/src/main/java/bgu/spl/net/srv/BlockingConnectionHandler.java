@@ -1,9 +1,7 @@
 package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
-import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
-import bgu.spl.net.api.StompMessagingProtocolImpl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -60,6 +58,5 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
             out.flush();
         }
         catch(Exception e){}
-        //IMPLEMENT IF NEEDED
     }
 }

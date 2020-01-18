@@ -33,7 +33,7 @@ public class Send implements Frame{
         }
         if(!stomp.getuser().isSubscribed(headers[0]))
         {
-            Error erro=new Error(msg,"Not subsribed to topic");
+            Error erro=new Error(msg,"Not subscribed to topic");
             connect.send(stomp.getconnectid(),erro.toString());
             return false;
 

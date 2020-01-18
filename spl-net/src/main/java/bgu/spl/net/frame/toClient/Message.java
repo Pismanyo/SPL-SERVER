@@ -11,15 +11,11 @@ public class Message {
     public Message(String topic,String msg){
         this.topic=topic;
         this.msg=msg;
-      //  this.subsriptionid=subsriptionid.toString();
-       // Integer temp=ConnectionsiImp.getInstance().Messageidcount();
-      //  messageid=temp.toString();
-       // while (messageid.length()<=5)
-        //    messageid="0"+messageid;
     }
+
     public void setSubsriptionid(Integer subsriptionid)
     {
-            this.subsriptionid=subsriptionid.toString();
+        this.subsriptionid=subsriptionid.toString();
     }
 
 
@@ -27,7 +23,7 @@ public class Message {
 
         this.messageid = messageNum.toString();
         while (messageid.length()<5)
-              messageid="0"+messageid;
+            messageid="0"+messageid;
     }
 
     public String toString()

@@ -1,7 +1,6 @@
 package bgu.spl.net.frame.fromClient;
 
 import bgu.spl.net.api.Messageformat;
-import bgu.spl.net.api.StompMessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocolImpl;
 import bgu.spl.net.frame.toClient.Connected;
 import bgu.spl.net.frame.toClient.Error;
@@ -14,9 +13,6 @@ public class Connect implements Frame {
     private String[] format={"accept-version:","host:","login:","passcode:"};
     private boolean hasbody=false;
 
-
-
-
     public Connect(StompMessagingProtocolImpl stompMessagingProtocol){
         stomp=stompMessagingProtocol;
     }
@@ -25,8 +21,6 @@ public class Connect implements Frame {
         Messageformat a = new Messageformat();
         ConnectionsiImp connect = ConnectionsiImp.getInstance();
         String[] headers = a.messageformat(msg, format,hasbody);
-        for(String s:headers)
-            System.out.println(s);
         if (headers == null) {
             Error erro = new Error(msg,"Incorrect format.");
             connect.send(stomp.getconnectid(), erro.toString());
@@ -55,8 +49,6 @@ public class Connect implements Frame {
                     return false;
                 }
             }
-//            data.addUser(user);
-
         }
         stomp.setactiveUser(user);
         Connected ans = new Connected(Double.parseDouble(headers[0]));

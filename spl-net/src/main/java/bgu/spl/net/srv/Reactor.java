@@ -1,9 +1,7 @@
 package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
-import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.StompMessagingProtocol;
-import bgu.spl.net.api.StompMessagingProtocolImpl;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -20,7 +18,6 @@ public class Reactor<T> implements Server<T> {
     private final int port;
     private final Supplier<MessageEncoderDecoder<T>> readerFactory;
     private final Supplier<StompMessagingProtocol> stompFactory;
-    private StompMessagingProtocol stomp;
     private final ActorThreadPool pool;
     private Connections connections;
     private Selector selector;

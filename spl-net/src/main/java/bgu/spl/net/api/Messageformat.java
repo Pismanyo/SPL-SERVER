@@ -3,9 +3,15 @@ package bgu.spl.net.api;
 import java.util.HashMap;
 
 public class Messageformat {
+    /**
+     * Formats a message received from a client to a frame the server can interpret.
+     * @param msg A message to format.
+     * @param headers The stomp headers.
+     * @param hasbody The stomp frame body.
+     * @return A string array the formatted message.
+     */
     public String[] messageformat(String msg, String[] headers, boolean hasbody)
     {
-
         String[] splitMsg = msg.split("\n");
         HashMap<String,Integer> order=new HashMap<>();
         String []ans=new String[headers.length+1];
@@ -25,19 +31,7 @@ public class Messageformat {
         }
         if(w==headers.length-1)
             return null;
-//
-//
-//        for(int a=0; a<headers.length;a++)
-//        {
-//            String[] headline=splitMsg[a+1].split(":");
-//
-//
-//            if(!(headline[0]+":").equals(headers[a]))
-//                return null;
-//            else{
-//            ans[a] = headline[1];
-//            }
-//        }
+
         ans[headers.length]="";
         if(hasbody) {
             for(int i=(headers.length+2);i<splitMsg.length;i++)
@@ -45,7 +39,6 @@ public class Messageformat {
                 ans[headers.length]=ans[headers.length]+splitMsg[i]+"\n";
             }
         }
-
         return ans;
 
 

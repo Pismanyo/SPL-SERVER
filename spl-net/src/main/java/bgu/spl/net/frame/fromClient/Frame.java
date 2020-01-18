@@ -1,8 +1,8 @@
 package bgu.spl.net.frame.fromClient;
 
-import bgu.spl.net.srv.Connections;
-import bgu.spl.net.srv.User;
-
+/**
+ * Processes the message received from the client depending on the frame type.
+ */
 public interface Frame {
     boolean process( String msg);
 

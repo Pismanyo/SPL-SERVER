@@ -11,7 +11,11 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
     private Connections<String> connections;
     private User activeUser;
 
-
+    /**
+     * Starts the server protocol with the clients connected to the server.
+     * @param connectionId Client connection id.
+     * @param connections List of users connected.
+     */
     @Override
     public void start(int connectionId, Connections<String> connections) {
         this.connectionId = connectionId;
@@ -19,9 +23,12 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
         activeUser=null;
     }
 
+    /**
+     * Processes messages received from client.
+     * @param message A message from a client to be processed.
+     */
     @Override
     public void process(String message) {
-        System.out.println(message);
         String a = message.substring(0, message.indexOf('\n'));
         Frame f;
         switch (a) {
@@ -53,18 +60,17 @@ public class StompMessagingProtocolImpl implements StompMessagingProtocol {
             toTerminate = true;
         } else if (f instanceof Disconnect)
             connections.disconnect(connectionId);
-
     }
 
     @Override
     public boolean shouldTerminate() {
-
         return toTerminate;
     }
 
     public void setToTerminate(boolean terminate){
         toTerminate=terminate;
     }
+
     public User getuser()
     {
         return activeUser;

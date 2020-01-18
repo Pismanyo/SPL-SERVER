@@ -44,14 +44,14 @@ public class Unsubscribe implements Frame {
         String topic =active.getTopic((Integer.parseInt(headers[0])));
         if(topic==null)
         {
-            Error erro=new Error(msg,"Not subsribed under given id.");
+            Error erro=new Error(msg,"Not subscribed under given id.");
             ConnectionsiImp.getInstance().send(stomp.getconnectid(),erro.toString());
             return false;
 
         }
         if(!active.unscribe((Integer.parseInt(headers[0]))))
         {
-            Error erro=new Error(msg,"Not subsribed under given id to topic.");
+            Error erro=new Error(msg,"Not subscribed under given id to topic.");
             ConnectionsiImp.getInstance().send(stomp.getconnectid(),erro.toString());
             return false;
 

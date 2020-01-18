@@ -2,8 +2,6 @@ package bgu.spl.net.srv;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class User {
     private String username;
@@ -20,11 +18,11 @@ public class User {
         topicToId=new HashMap<>();
         active=true;
     }
-    public User()
-    {
 
-    }
-
+    /**
+     * Removes user books upon receiving disconnection frame.
+     * @param conectionId Client connection id to handle.
+     */
     public void disconnect(int conectionId)
     {
         Collection<String>a=subscibe.values();
@@ -42,26 +40,26 @@ public class User {
         subscibe.clear();
         topicToId.clear();
     }
+
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
     public boolean isSubscribed(String topic)
     {
         return subscibe.containsValue(topic);
     }
 
+    /**
+     * Adds a subscriber to a desired topic.
+     * @param id Subscriber id.
+     * @param topic Topic to subscribe to.
+     * @return True if subscriber was added and false otherwise.
+     */
     public boolean addSubscribe(int id, String topic) {
         if(!subscibe.containsKey(id)&&!subscibe.containsValue(topic)) {
             subscibe.put( id,topic);
@@ -71,14 +69,7 @@ public class User {
         return false;
 
     }
-    public Integer getId(String topic)
-    {
-        if(topicToId.containsKey(topic))
-        {
-            return topicToId.get(topic);
-        }
-        return null;
-    }
+
     public String getTopic(int id)
     {
         if(subscibe.containsKey(id))
@@ -88,17 +79,20 @@ public class User {
         return null;
 
     }
+
+    /**
+     * Unsubscribers a client from a topic by id.
+     * @param id The subscribers id
+     * @return True if unsubscribed and false otherwise.
+     */
     public boolean unscribe(int id)
     {
-
         if(subscibe.containsKey(id))
         {
             String ans=subscibe.get(id);
-           // ConnectionsiImp.getInstance().ub
             topicToId.remove(ans,id);
             return subscibe.remove(id,ans);
         }
-
         return false;
     }
 

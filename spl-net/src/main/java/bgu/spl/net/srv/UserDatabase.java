@@ -11,9 +11,16 @@ public class UserDatabase {
 
         userdata = new ConcurrentHashMap<>();
     }
+
     public static UserDatabase getInstance() {
         return userHolder.instance;
     }
+
+    /**
+     * Adds a user to the user database.
+     * @param a A user to add to the database.
+     * @return True if the user was added to the database and false otherwise.
+     */
     public synchronized boolean addUser(User a)
     {
         if(!userdata.containsKey(a.getUsername())) {
@@ -23,10 +30,14 @@ public class UserDatabase {
         else{
             return false;
         }
-//        else return false;
-
     }
 
+    /**
+     * Searches for a user in the database.
+     * @param username Users username.
+     * @param password Users password.
+     * @return A user if one matching the username and password exists and null otherwise.
+     */
     public User findUser(String username,String password)
     {
         if(userdata.containsKey(username)) {
@@ -36,11 +47,4 @@ public class UserDatabase {
          return null;
 
     }
-    public boolean checkPassword(String username,String password)
-    {
-      return userdata.get(username).getPassword().equals(password);
-    }
-
-
-
 }

@@ -4,7 +4,7 @@ import bgu.spl.net.frame.toClient.Message;
 
 public interface Connections<T> {
 
-    void send(String topic, Message message);
+    void send(T topic, Message message);
 
     boolean send(int connectionId, T msg);
 

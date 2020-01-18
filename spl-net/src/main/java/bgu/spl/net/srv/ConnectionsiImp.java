@@ -3,11 +3,9 @@ package bgu.spl.net.srv;
 import bgu.spl.net.api.PairForMe;
 import bgu.spl.net.frame.toClient.Message;
 
-import javax.swing.text.html.HTMLDocument;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectionsiImp implements Connections<String> {
@@ -24,26 +22,28 @@ public class ConnectionsiImp implements Connections<String> {
         idCounter = new AtomicInteger(0);
         messageid = new AtomicInteger(0);
     }
+
     public static ConnectionsiImp getInstance() {
         return ConnectionsiImp.connectionHolder.instance;
     }
-//    public ConnectionsiImp()
-//    {
-//        idToConectionHandler=new ConcurrentHashMap<>();
-//        idCounter=0;
-//    }
     @Override
     public void addConnectionHandler(ConnectionHandler a,int id)
     {
         idToConectionHandler.put(id,a);
     }
 
-
     @Override
     public int getnext() {
         return idCounter.incrementAndGet();
     }
 
+    /**
+     * Subscribes a client to a topic.
+     * @param topic A topic to subscribe to.
+     * @param subscriptionid A client subscription id.
+     * @param connectionid Clients connection id.
+     * @return True if the client was subscribed and false otherwise.
+     */
     @Override
     public boolean subscribe( String topic,int subscriptionid, int connectionid) {
         subscribersIdToConnectionId.putIfAbsent(topic,new ConcurrentSkipListMap<>((a,b)->{return b-a;}));//syncrized problem
@@ -53,7 +53,13 @@ public class ConnectionsiImp implements Connections<String> {
         return true;
     }
 
-
+    /**
+     * Unsubscribes a client from a topic.
+     * @param topic A topic to unsubscribe from.
+     * @param SubsriptionId Clients subscriber id to that topic.
+     * @param connectionId Clients connection id.
+     * @return True if the client was unsubscribed and false otherwise.
+     */
     @Override
     public boolean unsubscribe(String topic,int SubsriptionId,int connectionId) {
 
@@ -61,6 +67,11 @@ public class ConnectionsiImp implements Connections<String> {
         return true;
     }
 
+    /**
+     * Sends a message to clients subscribed to a certain topic
+     * @param topic A topic clients are subscribed to.
+     * @param message A message to send to all the clients subscribed to the topic.
+     */
     @Override
     public synchronized void send(String topic, Message message) {
         NavigableSet<Integer> toSend =this.subscribersIdToConnectionId.get(topic).descendingKeySet();
@@ -75,12 +86,14 @@ public class ConnectionsiImp implements Connections<String> {
             if(!this.send(connectid,message.toString()))
                 subscribersIdToConnectionId.get(topic).remove(temp);
         }
-
-
-
     }
 
-
+    /**
+     * Sends a message back to the client.
+     * @param connectionId A clients id to send to.
+     * @param msg The message to send back to the client.
+     * @return True if message was passed and false otherwise.
+     */
     @Override
     public synchronized boolean send(int connectionId, String msg) {
         if(idToConectionHandler.containsKey(connectionId))
@@ -91,6 +104,11 @@ public class ConnectionsiImp implements Connections<String> {
         return false;
     }
 
+    /**
+     * Sends a message to clients subscribed to a certain topic
+     * @param topic A topic clients are subscribed to.
+     * @param msg A message to send to all the clients subscribed to the topic.
+     */
     @Override
     public void send(String topic, String msg) {
         NavigableSet<Integer> toSend =this.subscribersIdToConnectionId.get(topic).descendingKeySet();
@@ -103,14 +121,13 @@ public class ConnectionsiImp implements Connections<String> {
         }
     }
 
+    /**
+     * Disconnects a client from the server.
+     * @param connectionId A client id to remove from the server.
+     */
     @Override
     public void disconnect(int connectionId) {
-
         idToConectionHandler.remove(connectionId);
-    }
-    public int Messageidcount()
-    {
-        return messageid.incrementAndGet();
     }
 
 }

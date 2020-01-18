@@ -43,14 +43,14 @@ public class Subscribe implements Frame {
         }
        if(!active.addSubscribe((Integer.parseInt(headers[1])),headers[0]))
        {
-            Error erro=new Error(msg,"already subsribed under given id, or already subsribed to topic");
+            Error erro=new Error(msg,"already subscribed under given id, or already subscribed to topic");
            connect.send(stomp.getconnectid(),erro.toString());
             return false;
 
         }
         if(!connect.subscribe(headers[0],Integer.parseInt(headers[1]),stomp.getconnectid()))
         {
-            Error erro=new Error(msg,"different user subsribed under given subsribedid");
+            Error erro=new Error(msg,"different user subscribed under given subscriber id");
             connect.send(stomp.getconnectid(),erro.toString());
             return false;
         }

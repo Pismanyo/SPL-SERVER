@@ -26,7 +26,7 @@ public class Error implements Frame {
     public String toString()
     {
         String ans=  "ERROR"+'\n';
-        if(receiptId!="")
+        if(!receiptId.equals(""))
         {
             ans=ans+"receipt-id:"+receiptId+'\n';
         }
